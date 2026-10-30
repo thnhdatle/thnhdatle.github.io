@@ -1,0 +1,4 @@
+SESSION_SECRET=local-dev-secret
+DEV_AUTH_LOGIN=thnhdatle
+SITE_ORIGINS=http://localhost:4000,http://127.0.0.1:4000
+SITE_URL=http://localhost:4000

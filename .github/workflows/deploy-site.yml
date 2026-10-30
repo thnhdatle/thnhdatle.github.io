@@ -1,0 +1,75 @@
+# Builds the al-folio site in site/ and publishes it to GitHub Pages.
+# Runs on every push that touches the site, including commits made by the
+# CMS in the admin dashboard (admin/ reads this workflow's runs by file name).
+name: Deploy site
+
+# Not public yet: deploys only when started by hand (Actions → Deploy site →
+# Run workflow). To publish automatically on every push and CMS save, restore:
+#   push:
+#     branches: [main]
+#     paths:
+#       - "site/**"
+#       - ".github/workflows/deploy-site.yml"
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Quick successive CMS saves: the newest queued build replaces older queued ones.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: site
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update && sudo apt-get install -y imagemagick
+          pip3 install --upgrade nbconvert
+          npm install -g purgecss
+
+      - name: Build
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build
+
+      - name: Purge unused CSS
+        run: purgecss -c purgecss.config.js
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site/_site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

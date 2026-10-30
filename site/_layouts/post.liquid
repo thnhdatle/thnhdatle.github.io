@@ -1,0 +1,59 @@
+---
+layout: default
+---
+{% comment %}
+  Local override of al_folio_core's post layout: a plain essay page
+  (title, month + year, body) instead of the meta/tags/related-posts header.
+{% endcomment %}
+
+{% if page._styles %}
+  <!-- Page/Post style -->
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+{% endif %}
+
+<style>
+  .essay { max-width: 640px; }
+  .essay .essay-date { font-size: 0.85rem; color: var(--global-text-color-light); margin-bottom: 1.5rem; }
+  .essay .essay-content { line-height: 1.6; }
+  .essay .essay-content p { margin-bottom: 1.4rem; }
+  .essay .essay-content img { display: block; max-width: 100%; height: auto; margin: 1.5rem auto; }
+  .essay .essay-content figure { margin: 1.5rem 0; }
+  .essay .essay-content figcaption { font-size: 0.9rem; color: var(--global-text-color-light); text-align: center; margin-top: 0.5rem; }
+
+  /* footnote markers like [1], in a muted bracket */
+  .essay sup:has(> a.footnote) { font-size: 0.85em; vertical-align: baseline; color: var(--global-text-color-light); }
+  .essay sup:has(> a.footnote)::before { content: "["; }
+  .essay sup:has(> a.footnote)::after { content: "]"; }
+  .essay .footnotes { font-size: 0.95rem; margin-top: 2.5rem; }
+  .essay .footnotes::before { content: "Notes"; display: block; font-weight: 700; margin-bottom: 0.75rem; }
+</style>
+
+<div class="post essay">
+  <header>
+    <h1 class="essay-title">{{ page.title }}</h1>
+    <p class="essay-date">{{ page.date | date: '%B %Y' }}</p>
+  </header>
+
+  <article class="essay-content">
+    <div id="markdown-content">
+      {{ content }}
+    </div>
+  </article>
+
+  {% if page.citation %}
+    {% include citation.liquid %}
+  {% endif %}
+
+  {% if page.related_publications %}
+    <h2>References</h2>
+    <div class="publications">
+      {% bibliography --group_by none --cited_in_order %}
+    </div>
+  {% endif %}
+
+  {% if site.plugins contains 'al_comments' %}
+    {% include plugins/al_comments.liquid %}
+  {% endif %}
+</div>

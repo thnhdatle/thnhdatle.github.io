@@ -1,0 +1,37 @@
+{
+  "name": "site-admin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:tracker": "esbuild src/tracker/index.ts --bundle --minify --format=iife --target=es2019 --outfile=public/s.js",
+    "build": "npm run build:tracker && vite build",
+    "dev": "npm run build && wrangler d1 migrations apply DB --local && wrangler dev",
+    "dev:web": "vite",
+    "deploy": "npm run build && wrangler d1 migrations apply DB --remote && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "node e2e/run.mjs"
+  },
+  "dependencies": {
+    "hono": "4.13.13",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "ua-parser-js": "1.0.41"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "1.4.7",
+    "@cloudflare/workers-types": "5.20261023.1",
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/ua-parser-js": "0.7.39",
+    "@vitejs/plugin-react": "6.1.2",
+    "esbuild": "0.28.2",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "vitest": "4.1.12",
+    "wrangler": "4.152.0"
+  }
+}

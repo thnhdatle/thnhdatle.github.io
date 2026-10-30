@@ -1,0 +1,236 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8";
+
+/* Built-in Sass modules you’ll likely use across partials */
+@use "sass:math";
+@use "sass:string";
+
+/* Configure your design tokens BEFORE loading any of your partials.
+   Make sure `_sass/_variables.scss` declares `$max-content-width: 72rem !default;` */
+@use "variables" with (
+  $max-content-width: {{ site.max_width | default:  "930px" }},
+  // site accent: deep blue instead of the theme's purple (light) / cyan (dark)
+  $purple-color: #1a4fa3,
+  $cyan-color: #8fb3ff
+);
+
+/* Your project partials — convert these files to `@use "variables";`
+   (or `@use "variables" as *;`) inside each file and qualify variables if needed. */
+@use "themes";
+@use "layout";
+
+// Core styles organized by usage
+@use "typography";
+@use "navbar";
+@use "footer";
+@use "blog";
+@use "publications";
+@use "components";
+@use "utilities";
+
+// Other specialized styles
+@use "tabs";
+@use "teachings";
+@use "typograms";
+
+// Site-wide type scale, modelled on zhixin612.github.io: one light page title, quiet section
+// headings, and everything else at body size.
+//   page title 2rem/300 · section heading 1.25rem/400 · item title 1rem/400 · body 1rem/300
+//   meta 0.85rem muted · badge 0.75rem · button 0.65rem uppercase
+
+// Page title: template pages (.post-title) and the custom blog, references and post layouts.
+.post-title,
+.essays h1,
+.references h1,
+.essay .essay-title {
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--global-text-color);
+  margin: 1rem 0;
+}
+
+// template page titles are lowercase ("publications"); post titles are already title case
+.post-title {
+  text-transform: capitalize;
+
+  // the about layout bolds the first name
+  .font-weight-bold {
+    font-weight: inherit !important;
+  }
+}
+
+.post-description {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.social .contact-note {
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+}
+
+// Larger profile picture on the about page: the theme gives it 30% of the column.
+@media (min-width: 576px) {
+  .profile {
+    width: 35%;
+  }
+}
+
+// Contact list under the profile picture: one item per line in the body font, icons in a
+// fixed column so wrapped lines stay aligned.
+.profile .more-info {
+  font-family: inherit;
+  margin-top: 0.75rem;
+
+  p {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    margin: 0.25rem 0;
+    text-align: left;
+  }
+
+  i {
+    flex: none;
+    width: 1.1rem;
+    text-align: center;
+  }
+}
+
+// Section headings: about (news, latest posts), publication years, project sections and pages.
+.post h2 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 2rem 0 0.75rem;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.publications h2.bibliography {
+  color: var(--global-text-color);
+  text-align: left;
+}
+
+.publications ol.bibliography li .abbr abbr {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+// Projects list (_pages/projects.html) and project pages (_projects/*.md)
+.oss-section + .oss-section {
+  margin-top: 2.5rem;
+}
+
+.oss-section-desc {
+  margin: -0.25rem 0 1.25rem;
+  color: var(--global-text-color-light);
+}
+
+.oss-project {
+  overflow: hidden;
+  margin-bottom: 1.75rem;
+}
+
+.oss-title {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+
+  a {
+    color: var(--global-text-color);
+  }
+
+  a:hover {
+    color: var(--global-theme-color);
+    text-decoration: none;
+  }
+}
+
+.oss-period {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+  background: #1a6e30;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1;
+  vertical-align: 0.1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16), 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.oss-thumb {
+  float: right;
+  width: 25%;
+  aspect-ratio: 16 / 10;
+  margin: 0.25rem 0 0.5rem 1rem;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16), 0 2px 10px rgba(0, 0, 0, 0.12);
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+.oss-summary {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+
+  p {
+    margin: 0;
+  }
+
+  strong {
+    font-weight: 500;
+  }
+}
+
+.oss-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.4rem 0;
+}
+
+.oss-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--global-text-color);
+  color: var(--global-text-color);
+  font-size: 0.65rem;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  &:hover {
+    border-color: var(--global-theme-color);
+    color: var(--global-theme-color);
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .oss-thumb {
+    float: none;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}

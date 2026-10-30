@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Nội dung</title>
+    <script>
+      window.CMS_MANUAL_INIT = true;
+    </script>
+    <script src="https://unpkg.com/@sveltia/cms@0.250.2/dist/sveltia-cms.js"></script>
+  </head>
+  <body>
+    <script type="module">
+      // The config is built by the worker from its env (repo, branch, content root).
+      const res = await fetch("/api/content/cms-config", { credentials: "same-origin" });
+      if (res.status === 401) {
+        location.href = "/login?return=" + encodeURIComponent("/content");
+      } else {
+        CMS.init({ config: await res.json() });
+      }
+    </script>
+  </body>
+</html>

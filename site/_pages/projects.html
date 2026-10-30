@@ -1,0 +1,45 @@
+---
+layout: page
+title: projects
+permalink: /projects/
+description: Software and AI systems built at OHLabs and NBM Lab, Pukyong National University, and open-source infrastructure for LLM and data systems.
+nav: true
+nav_order: 2
+display_categories: [research-industry, open-source]
+category_labels:
+  research-industry: Research & industry systems
+  open-source: Open-source infrastructure
+category_descriptions:
+  research-industry: Software and AI systems for private LLM use and industrial inspection, built at OHLabs and NBM Lab, Pukyong National University.
+  open-source: Lightweight infrastructure for LLM and data systems.
+---
+
+{%- for category in page.display_categories -%}
+  {%- assign projects = site.projects | where: "category", category | sort: "importance" -%}
+  <section class="oss-section">
+    <h2 id="{{ category }}">{{ page.category_labels[category] | default: category }}</h2>
+    {%- if page.category_descriptions[category] -%}<p class="oss-section-desc">{{ page.category_descriptions[category] }}</p>{%- endif -%}
+    {%- for project in projects -%}
+      <div class="oss-project">
+        <div class="oss-title">
+          {%- if project.period -%}<span class="oss-period">{{ project.period }}</span>{%- endif -%}
+          <a href="{{ project.url | relative_url }}">{{ project.title }}</a>
+        </div>
+        {%- if project.img -%}
+          <a class="oss-thumb" href="{{ project.url | relative_url }}">
+            <img src="{{ project.img | relative_url }}" alt="{{ project.title }} architecture" loading="lazy">
+          </a>
+        {%- endif -%}
+        <div class="oss-summary">{% capture bold_title %}**{{ project.title }}**{% endcapture %}{{ project.description | replace_first: project.title, bold_title | markdownify }}</div>
+        <div class="oss-links">
+          {%- if project.demo -%}
+            <a class="oss-btn" href="{{ project.demo | relative_url }}" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Demo</a>
+          {%- endif -%}
+          {%- if project.github -%}
+            <a class="oss-btn" href="{{ project.github }}"><i class="fa-brands fa-github"></i> GitHub</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </section>
+{%- endfor -%}

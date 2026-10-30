@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "site-admin",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/e", "/auth", "/login", "/callback", "/logout"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "site-analytics",
+      // Filled in after `wrangler d1 create site-analytics` (see README.md).
+      "database_id": "83f930c3-c4ca-4347-b21d-d9d5657147df",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": { "crons": ["17 3 * * *"] },
+  "vars": {
+    // Origins allowed to send analytics events.
+    "SITE_ORIGINS": "https://thnhdatle.github.io",
+    // Public URL of the site, used for links from the dashboard.
+    "SITE_URL": "https://thnhdatle.github.io",
+    "GITHUB_REPO": "thnhdatle/thnhdatle",
+    "GITHUB_BRANCH": "main",
+    // Folder inside GITHUB_REPO that holds the Jekyll site.
+    "CONTENT_ROOT": "site",
+    "DEPLOY_WORKFLOW": "deploy-site.yml",
+    // Comma-separated GitHub logins allowed into the dashboard.
+    "ADMIN_LOGINS": "thnhdatle",
+    "RETENTION_DAYS": "400"
+    // Secrets (wrangler secret put): GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_SECRET
+  },
+  "observability": { "enabled": true }
+}
